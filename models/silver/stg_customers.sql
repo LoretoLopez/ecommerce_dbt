@@ -40,7 +40,14 @@ limpio AS (
                 WHEN 'ESP'    THEN 'España'
                 ELSE 'España'
             END, 'España')                                          AS country,
-        COALESCE(TRY_TO_DATE(signup_date), '1900-01-01'::DATE)      AS signup_date,
+        COALESCE(
+        TRY_TO_DATE(signup_date, 'YYYY-MM-DD'),
+        TRY_TO_DATE(signup_date, 'DD/MM/YYYY'),
+        TRY_TO_DATE(signup_date, 'MM-DD-YYYY'),
+        TRY_TO_DATE(signup_date, 'DD-MM-YYYY'),
+        TRY_TO_DATE(signup_date, 'YYYY/MM/DD'),
+        TRY_TO_DATE(signup_date, 'MON DD, YYYY')
+    ) AS signup_date,
         COALESCE(INITCAP(TRIM(segment)), 'Sin segmento')            AS segment,
         CURRENT_TIMESTAMP()                                         AS _loaded_at
     FROM deduplicado
