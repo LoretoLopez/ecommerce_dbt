@@ -1,7 +1,7 @@
 WITH dates AS (
     SELECT
         DATEADD('day', SEQ4(), '2022-01-01'::DATE) AS date_key
-    FROM TABLE(GENERATOR(ROWCOUNT => 1826))  -- 5 años: 2022-2026
+    FROM TABLE(GENERATOR(ROWCOUNT => 1826))
 )
 
 SELECT

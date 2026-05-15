@@ -6,7 +6,13 @@ limpio AS (
     SELECT
         {{ dbt_utils.generate_surrogate_key(['order_id', 'product_name']) }} AS item_id,
         TRIM(order_id)                                              AS order_id,
-        INITCAP(TRIM(product_name))                                AS product_name,
+        INITCAP(TRIM(
+        REGEXP_REPLACE(
+            REGEXP_REPLACE(
+                UPPER(product_name),
+            '[^A-Z0-9 ]', ' '),
+        '\\s+', ' ')
+    )) AS product_name,
         COALESCE(INITCAP(TRIM(category)), 'Sin categoría')         AS category,
         CASE 
             WHEN TRY_TO_NUMBER(quantity) IS NULL THEN NULL
