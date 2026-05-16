@@ -1,0 +1,18 @@
+WITH dates AS (
+    SELECT
+        DATEADD('day', SEQ4(), '2022-01-01'::DATE) AS date_key
+    FROM TABLE(GENERATOR(ROWCOUNT => 1826))
+)
+
+SELECT
+    date_key,
+    YEAR(date_key)                                          AS year,
+    QUARTER(date_key)                                       AS quarter,
+    MONTH(date_key)                                         AS month,
+    MONTHNAME(date_key)                                     AS month_name,
+    WEEKOFYEAR(date_key)                                    AS week,
+    DAYOFWEEK(date_key)                                     AS day_of_week,
+    DAYNAME(date_key)                                       AS day_name,
+    CASE WHEN DAYOFWEEK(date_key) IN (0, 6) 
+         THEN TRUE ELSE FALSE END                           AS is_weekend
+FROM dates

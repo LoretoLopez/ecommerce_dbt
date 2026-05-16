@@ -1,0 +1,35 @@
+name: 'ecommerce_dbt'
+version: '1.0.0'
+config-version: 2
+
+profile: 'default'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  ecommerce_dbt:
+
+    bronze:
+      +materialized: view
+      +schema: BRONZE_DEV
+
+    silver:
+      +materialized: view
+      +schema: SILVER_DEV
+
+    gold:
+      +materialized: table
+      +schema: GOLD_DEV
+      
+      fact_order_items:
+        +materialized: incremental

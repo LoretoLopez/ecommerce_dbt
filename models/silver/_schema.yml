@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_email
+        tests:
+          - not_null
+      - name: segment
+        tests:
+          - accepted_values:
+              values: ["Premium", "Standard", "Basic", "Vip", "Sin segmento"]
+
+  - name: stg_products
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_order_items
+    columns:
+      - name: item_id
+        tests:
+          - unique
+          - not_null
+      - name: quantity
+        tests:
+          - not_null
+
+  - name: stg_shipping
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
