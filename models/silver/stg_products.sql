@@ -4,7 +4,7 @@ WITH source AS (
 
 limpio AS (
     SELECT
-        {{ dbt_utils.generate_surrogate_key(['product_name']) }}  AS product_id,
+        {{ dbt_utils.generate_surrogate_key(['INITCAP(TRIM(product_name))']) }}  AS product_id,
         INITCAP(TRIM(product_name))                               AS product_name,
         INITCAP(TRIM(category))                                   AS category,
         INITCAP(TRIM(subcategory))                                AS subcategory,

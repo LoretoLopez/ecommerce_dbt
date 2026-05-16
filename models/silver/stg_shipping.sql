@@ -32,7 +32,15 @@ limpio AS (
             TRY_TO_DATE(delivery_date, 'YYYY/MM/DD'),
             TRY_TO_DATE(delivery_date, 'MON DD, YYYY')
         )                                                           AS delivery_date,
-        COALESCE(UPPER(TRIM(status)), 'DESCONOCIDO')                AS status,
+        CASE UPPER(TRIM(status))
+        WHEN 'ENTREGADO'   THEN 'ENTREGADO'
+        WHEN 'EN_TRANSITO' THEN 'EN_TRANSITO'
+        WHEN 'EN TRANSITO' THEN 'EN_TRANSITO'
+        WHEN 'PENDIENTE'   THEN 'PENDIENTE'
+        WHEN 'DEVUELTO'    THEN 'DEVUELTO'
+        WHEN 'PERDIDO'     THEN 'PERDIDO'
+        ELSE 'DESCONOCIDO'
+    END                                                                 AS status,
         CURRENT_TIMESTAMP()                                         AS _loaded_at
     FROM deduplicado
     WHERE rn = 1
