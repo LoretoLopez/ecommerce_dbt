@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: dim_customers
+    columns:
+      - name: customer_key
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+
+  - name: dim_products
+    columns:
+      - name: product_key
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_date
+    columns:
+      - name: date_key
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_carriers
+    columns:
+      - name: carrier_key
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_order_items
+    columns:
+      - name: fact_id
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        tests:
+          - not_null
+      - name: date_key
+        tests:
+          - not_null
+
+  - name: fact_shipping
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null

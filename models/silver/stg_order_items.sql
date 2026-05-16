@@ -2,17 +2,24 @@ WITH source AS (
     SELECT * FROM {{ source('bronze', 'BRONZE_ORDER_ITEMS') }}
 ),
 
+deduplicado AS (
+    SELECT *,
+        ROW_NUMBER() OVER (
+            PARTITION BY order_id, product_name
+            ORDER BY discount DESC
+        ) AS rn
+    FROM source
+    WHERE order_id IS NOT NULL
+      AND product_name IS NOT NULL
+),
+
 limpio AS (
     SELECT
-        {{ dbt_utils.generate_surrogate_key(['INITCAP(TRIM(product_name))']) }} AS item_id,
-        TRIM(order_id)                          AS order_id,
-        INITCAP(TRIM(product_name))             AS product_name,
+        {{ dbt_utils.generate_surrogate_key(['TRIM(order_id)', 'INITCAP(TRIM(product_name))']) }} AS item_id,
+        TRIM(order_id)                                              AS order_id,
+        INITCAP(TRIM(product_name))                                AS product_name,
         COALESCE(INITCAP(TRIM(category)), 'Sin categoría')         AS category,
-        CASE 
-            WHEN TRY_TO_NUMBER(quantity) IS NULL THEN NULL
-            WHEN TRY_TO_NUMBER(quantity) <= 0 THEN NULL
-            ELSE TRY_TO_NUMBER(quantity)::INT
-        END                                                        AS quantity,
+        TRY_TO_NUMBER(quantity)::INT                               AS quantity,
         TRY_TO_DECIMAL(
             REGEXP_REPLACE(
                 REGEXP_REPLACE(unit_price, '[^0-9,.]', ''),
@@ -25,8 +32,7 @@ limpio AS (
             ELSE TRY_TO_DECIMAL(discount, 10, 2)
         END                                                        AS discount,
         CASE
-            WHEN TRY_TO_NUMBER(quantity) > 0 
-             AND TRY_TO_DECIMAL(
+            WHEN TRY_TO_DECIMAL(
                 REGEXP_REPLACE(
                     REGEXP_REPLACE(unit_price, '[^0-9,.]', ''),
                     ',', '.'
@@ -43,10 +49,8 @@ limpio AS (
             ELSE NULL
         END                                                        AS line_total,
         CURRENT_TIMESTAMP()                                        AS _loaded_at
-    FROM source
-    WHERE order_id IS NOT NULL
-      AND product_name IS NOT NULL
-      AND TRY_TO_NUMBER(quantity) > 0
+    FROM deduplicado
+    WHERE rn = 1
 )
 
 SELECT * FROM limpio
