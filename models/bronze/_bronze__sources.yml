@@ -1,0 +1,90 @@
+version: 2
+
+sources:
+  - name: bronze
+    schema: BRONZE_DEV
+    database: ECOMMERCE_DB
+
+    quoting:
+      database: false
+      schema: false
+      identifier: false
+
+    tables:
+      - name: BRONZE_CUSTOMERS
+        description: "Datos crudos de clientes — contiene duplicados, emails inválidos y formatos inconsistentes"
+        columns:
+          - name: customer_email
+            description: "Email del cliente — puede contener valores sin @ o formatos inválidos"
+          - name: customer_name
+            description: "Nombre del cliente — puede estar en mayúsculas o incompleto"
+          - name: city
+            description: "Ciudad del cliente"
+          - name: country
+            description: "País en múltiples formatos: España, Spain, ES, ESPAÑA, esp"
+          - name: signup_date
+            description: "Fecha de registro en múltiples formatos"
+          - name: segment
+            description: "Segmento del cliente en múltiples formatos y algunos nulos"
+
+      - name: BRONZE_PRODUCTS
+        description: "Catálogo de productos — precios con símbolos de moneda y formatos inconsistentes"
+        columns:
+          - name: product_name
+            description: "Nombre del producto"
+          - name: category
+            description: "Categoría — puede estar en mayúsculas, minúsculas o ser nula"
+          - name: subcategory
+            description: "Subcategoría — puede estar en mayúsculas, minúsculas o ser nula"
+          - name: cost_price
+            description: "Precio de coste — con €, EUR, coma decimal"
+          - name: sale_price
+            description: "Precio de venta — con €, EUR, coma decimal"
+          - name: supplier
+            description: "Proveedor — puede ser nulo"
+
+      - name: BRONZE_ORDERS
+        description: "Pedidos — fechas en múltiples formatos, status inconsistentes y duplicados"
+        columns:
+          - name: order_id
+            description: "ID del pedido"
+          - name: customer_email
+            description: "Email del cliente"
+          - name: customer_name
+            description: "Nombre del cliente"
+          - name: order_date
+            description: "Fecha del pedido en múltiples formatos"
+          - name: status
+            description: "Estado del pedido — COMPLETADO, completado, COMP., nulos..."
+          - name: total_amount
+            description: "Importe total — con €, EUR, coma decimal"
+
+      - name: BRONZE_ORDER_ITEMS
+        description: "Líneas de pedido — precios con símbolos y categorías inconsistentes"
+        columns:
+          - name: order_id
+            description: "ID del pedido"
+          - name: product_name
+            description: "Nombre del producto"
+          - name: category
+            description: "Categoría — puede estar en mayúsculas, minúsculas o ser nula"
+          - name: quantity
+            description: "Cantidad de unidades"
+          - name: unit_price
+            description: "Precio unitario — con €, EUR, coma decimal o nulo"
+          - name: discount
+            description: "Descuento aplicado — entre 0 y 1, puede ser nulo"
+
+      - name: BRONZE_SHIPPING
+        description: "Envíos — carriers con typos, fechas en múltiples formatos y status inconsistentes"
+        columns:
+          - name: order_id
+            description: "ID del pedido"
+          - name: carrier
+            description: "Transportista — MRW, mrw, Mrw, DHL, dhl... puede ser nulo"
+          - name: ship_date
+            description: "Fecha de envío en múltiples formatos"
+          - name: delivery_date
+            description: "Fecha de entrega en múltiples formatos — puede ser anterior al ship_date"
+          - name: status
+            description: "Estado del envío — ENTREGADO, entregado, EN TRANSITO... puede ser nulo"
