@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: bronze
-    schema: BRONZE_DEV
+    schema: "{{ env_var('DBT_BRONZE_SCHEMA') }}"
     database: ECOMMERCE_DB
 
     quoting:
