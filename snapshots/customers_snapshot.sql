@@ -2,7 +2,7 @@
 
 {{
     config(
-        target_schema='SNAPSHOTS_DEV',
+        target_schema='SNAPSHOTS_' ~ target.name | upper,
         unique_key='customer_id',
         strategy='check',
         check_cols=['segment']
