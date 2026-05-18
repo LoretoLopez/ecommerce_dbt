@@ -2,7 +2,7 @@
 
 {{
     config(
-        target_schema='SNAPSHOTS_' ~ target.name | upper,
+        target_schema="{{ env_var('DBT_SNAPSHOTS_SCHEMA') }}",
         unique_key='customer_id',
         strategy='check',
         check_cols=['segment']
