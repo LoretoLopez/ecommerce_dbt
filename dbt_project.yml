@@ -21,15 +21,15 @@ models:
 
     bronze:
       +materialized: view
-      +schema: BRONZE_DEV
+      +schema: "{{ env_var('DBT_BRONZE_SCHEMA') }}"
 
     silver:
       +materialized: view
-      +schema: SILVER_DEV
+      +schema: "{{ env_var('DBT_SILVER_SCHEMA') }}"
 
     gold:
       +materialized: table
-      +schema: GOLD_DEV
+      +schema: "{{ env_var('DBT_GOLD_SCHEMA') }}"
       
       fact_order_items:
         +materialized: incremental
